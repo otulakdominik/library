@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.views import View
 from django.db.models import Q
 from .models import (
@@ -47,6 +47,17 @@ class BookUpdateView(UpdateView):
         'authors',
         'identifiers',
     ]
+
+    def get_success_url(self):
+        return reverse('books:list')
+
+
+class BookDeleteView(DeleteView):
+    model = Book
+    success_url = 'list'
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse('books:list')

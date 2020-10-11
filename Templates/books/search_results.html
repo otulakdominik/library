@@ -14,6 +14,7 @@
             <td>ISBN</td>
             <td>image link</td>
             <td></td>
+            <td></td>
         </tr>
       {% for book in object_list %}
         <tr>
@@ -22,7 +23,7 @@
             {% for author in book.authors.all %}
                 {{ author }}
                 {% empty %}
-                    <h1>None</h1>
+                    None
             {% endfor %}
             </td>
             <td>{{ book.released }}</td>
@@ -35,6 +36,12 @@
             </td>
             <td><a href= {{ book.imageLink }}>image</a></td>
             <td><a href="{% url 'books:edit' pk=book.pk%}">edit</a></td>
+            <td>
+                <form method="POST" action="{% url 'books:del' pk=book.pk%}">
+                    {% csrf_token %}
+                    <input type="submit" value="DELETE">
+                </form>
+            </td>
         </tr>
   {% empty %}
     <h1>No books found.</h1>
