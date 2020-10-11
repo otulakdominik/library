@@ -1,0 +1,43 @@
+{% extends "books/base.html" %}
+
+{% block content %}
+  <a href="{% url 'home' %}">Home</a>
+  <a href="{% url 'books:list' %}">Books</a>
+
+    <table>
+        <tr>
+            <td>title</td>
+            <td>authors</td>
+            <td>released</td>
+            <td>page count</td>
+            <td>language</td>
+            <td>ISBN</td>
+            <td>image link</td>
+            <td></td>
+        </tr>
+      {% for book in object_list %}
+        <tr>
+            <td>{{ book.title }}</td>
+            <td>
+            {% for author in book.authors.all %}
+                {{ author }}
+                {% empty %}
+                    <h1>None</h1>
+            {% endfor %}
+            </td>
+            <td>{{ book.released }}</td>
+            <td>{{ book.pageCount }}</td>
+            <td>{{ book.language}}</td>
+            <td>
+            {% for IndustryIdentifiers in book.identifiers.all %}
+              {{ IndustryIdentifiers }}
+            {% endfor %}
+            </td>
+            <td><a href= {{ book.imageLink }}>image</a></td>
+            <td><a href="{% url 'books:edit' pk=book.pk%}">edit</a></td>
+        </tr>
+  {% empty %}
+    <h1>No books found.</h1>
+  {% endfor %}
+    </table>
+{% endblock content %}

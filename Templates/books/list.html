@@ -1,0 +1,75 @@
+{% extends "books/base.html" %}
+
+{% block content %}
+  <a href="{% url 'home' %}">Home</a>
+  <a href="{% url 'books:create' %}">Create Book</a>
+  <a href="{% url 'books:search_api' %}">Add books form google api</a>
+<form action="{% url 'books:search_results' %}" method="get">
+  <input name="q" type="text" placeholder="Search...">
+  <input type="submit" value="search">
+</form>
+<form action="{% url 'books:data_search_results' %}" method="get">
+  <input name="s" type="text" placeholder="from data yyyy-mm-dd">
+  <input name="e" type="text" placeholder="to data yyyy-mm-dd">
+  <input type="submit" value="search" >
+</form>
+  <p></p>
+    <table>
+        <tr>
+            <td>title</td>
+            <td>authors</td>
+            <td>released</td>
+            <td>page count</td>
+            <td>language</td>
+            <td>ISBN</td>
+            <td>image link</td>
+            <td></td>
+        </tr>
+      {% for book in books %}
+        <tr>
+            <td>{{ book.title }}</td>
+            <td>
+            {% for author in book.authors.all %}
+                {{ author }}
+                {% empty %}
+                    <h1>None</h1>
+            {% endfor %}
+            </td>
+            <td>{{ book.released }}</td>
+            <td>{{ book.pageCount }}</td>
+            <td>{{ book.language}}</td>
+            <td>
+            {% for IndustryIdentifiers in book.identifiers.all %}
+              {{ IndustryIdentifiers }}
+            {% endfor %}
+            </td>
+            <td><a href= {{ book.imageLink }}>image</a></td>
+            <td><a href="{% url 'books:edit' pk=book.pk%}">edit</a></td>
+        </tr>
+  {% empty %}
+    <h1>No books found.</h1>
+  {% endfor %}
+    </table>
+
+  <div>
+    <span>
+      {% if is_paginated %}
+        <ul>
+        {% if page_obj.has_previous %}
+            <li>
+                <span><a href="?page={{ page_obj.previous_page_number }}">Previous</a></span>
+            </li>
+        {% endif %}
+            <li>
+                <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+            </li>
+        {% if page_obj.has_next %}
+            <li>
+                <span><a href="?page={{ page_obj.next_page_number }}">Next</a></span>
+            </li>
+        {% endif %}
+      {% endif %}
+    </span>
+  </div>
+
+{% endblock content %}
